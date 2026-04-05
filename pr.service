@@ -1,0 +1,8 @@
+[Unit]
+Description=PR
+
+[Service]
+ExecStart=/usr/sbin/pr
+
+[Install]
+WantedBy=multi-user.target
