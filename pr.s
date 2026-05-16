@@ -1,20 +1,14 @@
-# pr (C)Copyright Larry B. Daniel Atlanta, Ga.
+# pr (C) Copyright Larry B. Daniel Atlanta, Ga.
 # Prayer Rejection
 
+#define MAPRAYER 89
 #define REJECT 94
-
-#define ABUSEPRAYER 173
-#define MISUSEPRAYER 204
 
 	.data
 real:	.quad 0
 
-bang:	.ascii	"!"
-dot:	.ascii 	"."
-one:	.ascii	"1"
-two:	.ascii  "2"
-three:	.ascii	"3"
-
+bang:	.asciz	"!"
+dot:	.asciz	"."
 title:	.asciz  "Prayer Rejecter\n"
 	.set	titlel, .-title
 
@@ -23,84 +17,65 @@ title:	.asciz  "Prayer Rejecter\n"
 	.text
 	.global main
 main:
+        # Set High Priority
+        mov     $0,%rdi
+        mov     $0,%rsi
+        mov     $-20,%rdx
+        call    setpriority
+
         # Title of Program
         mov     $2,%rdi         # fd
         mov     $title,%rsi     # *buf
         mov     $titlel,%edx    # size
         call write
-
+       
+        # Reduce Test
+        mov     $123,%rax
+        call    reduce
+        cmp     $6,%rax
+        je      first
+        call    pdot
+        call    pbang
+        ret
 first:
-	call 	pdot
-	rdrand	%rax 	
+        call    sched_yield
+	call	pdot
+	rdrand 	%rax
 	jnc	first
 	call	reduce
-	cmp	$1, %rax
+	cmp	$8, %rax
 	je	second
-	call	sched_yield
-#	call	pone
 	jmp	first
 
 second:
 	rdrand 	%rax
-	jnc	second
+	jnc	first
 	call	reduce
-	cmp	$7, %rax
-	je	third
-	call	sched_yield
-#	call	ptwo
-	jmp	second
-
-third:
-	rdrand 	%rax
-	call	reduce
-	cmp	$3, %rax
+	cmp	$9, %rax
 	je	apply
-	call	sched_yield
-	call	pthree
-	jmp	third
-
-apply:	call	doapply
-	jmp	done
-
-done:	call 	sched_yield
 	jmp	first
 
-doapply:
+apply:
 	call	pbang
 	movq	$0,real
-	call	perfect
 	movq 	$94,real
-	call	humble
 	movq 	$0,real
-	call	perfect	
-	movq	$0,real
-	call	perfect
-	movq 	$94,real
-	call	humble
-	movq 	$0,real
-	call	perfect	
-	movq	$0,real
-	call	perfect
-	movq 	$94,real
-	call	humble
-	movq 	$0,real
-	call	perfect	
-	ret	
+	jmp     first	
 
 reduce:
 # if n is 0 then 0
 # n = n modulo 9
 # if n is 0 then 9
 # n
-	cmp	$0,%rax
-	je	reduced
-	mov	$0,%rdx
-	mov	$9,%rcx
-	div	%rcx
-	mov	%rdx,%rax
-	cmp 	$0,%rax
-	jne	reduced
-	mov	$9,%rax
+        cmp    $0,%rax
+        je     reduced
+        mov    $0,%rdx
+        mov    $9,%rcx
+        div    %rcx
+        mov    %rdx,%rax
+        cmp    $0,%rax
+        jne    reduced
+        mov    $9,%rax
 reduced: ret
 
 pdot: 
@@ -116,30 +91,11 @@ pbang:
         mov     $1,%edx    # size
         call write
 	ret
-
-pone:	mov	$2,%rdi
-	mov	$one,%rsi
-	mov	$1,%edx
-	call	write
-	ret
-
-ptwo:	mov	$2,%rdi
-	mov	$two,%rsi
-	mov	$1,%edx
-	call	write
-	ret
-
-pthree:	mov	$3,%rdi
-	mov	$three,%rsi
-	mov	$1,%edx
-	call	write
-	ret
 	
 perfect:
 	mov	$496000,%rdi
 	call	usleep
-	ret
-
+	ret	
 
 humble:
 	mov	$1100000,%rdi

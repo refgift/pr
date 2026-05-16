@@ -2,7 +2,7 @@
 Description=PR
 
 [Service]
-ExecStart=/usr/sbin/pr
+ExecStart=/usr/local/bin/pr
 
 [Install]
 WantedBy=multi-user.target
