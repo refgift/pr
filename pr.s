@@ -2,7 +2,7 @@
 # Prayer Rejection
 
 #define MAPRAYER 89
-#define REJECT 94
+#define REJECT 289
 
 	.data
 real:	.quad 0
@@ -39,7 +39,7 @@ main:
         ret
 first:
         call    sched_yield
-	call	pdot
+#	call	pdot
 	rdrand 	%rax
 	jnc	first
 	call	reduce
@@ -56,9 +56,9 @@ second:
 	jmp	first
 
 apply:
-	call	pbang
+#	call	pbang
 	movq	$0,real
-	movq 	$94,real
+	movq 	$289,real
 	movq 	$0,real
 	jmp     first	
 
