@@ -60,6 +60,7 @@ apply:
 	movq	$0,real
 	movq 	$289,real
 	movq 	$0,real
+        call    humble
 	jmp     first	
 
 reduce:
