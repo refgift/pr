@@ -37,8 +37,8 @@ main:
         call    pdot
         call    pbang
         ret
-first:
-        call    sched_yield
+first:  pause
+#       call    sched_yield
 #	call	pdot
 	rdrand 	%rax
 	jnc	first
