@@ -38,7 +38,7 @@ main:
         call    pbang
         ret
 first:
-        call    sched_yield
+        pause
 #	call	pdot
 	rdrand 	%rax
 	jnc	first
